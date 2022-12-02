@@ -10,15 +10,18 @@
 
 .header {
   display: flex;
+  height: 15vh;
   flex-direction: column;
   font-size: calc(10px + 2vmin);
   color: white;
+  align-items: center;
+  justify-content: center;
+
+  transition: height 0.75s ease-in-out;
 }
 
 .header.fullscreen {
-  min-height: 100vh;
-  align-items: center;
-  justify-content: center;
+  height: 100vh;
 }
 
 .navlink {
@@ -26,6 +29,10 @@
   font-weight: bold;
   text-decoration: none;
   color: #1b8e04;
+}
+
+.navlink+.navlink {
+  margin-left: 1em;
 }
 
 .content {

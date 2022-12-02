@@ -1,48 +1,56 @@
-import { Component, Show } from "solid-js";
+import { Component, For, Show } from "solid-js";
 
-import { parseLocation } from "./routing";
-import { Counter } from "./guis/Counter";
-import { TemperatureConverter } from "./guis/TemperatureConverter";
+import { useLocation, ROUTES } from "./routing";
 
 import styles from "./App.module.css";
-import { FlightBooker } from "./guis/FlightBooker";
 
 const App: Component = () => {
-  const page = parseLocation(window.location.pathname);
+  const [location, setLocation] = useLocation();
+
   return (
     <div class={styles.App}>
       <header
         class={styles.header}
-        classList={{ [styles.fullscreen]: page === "HOME" }}
+        classList={{ [styles.fullscreen]: location() === "/" }}
       >
         <p>7GUIs</p>
         <nav>
-          <Show when={page !== "HOME"}>
-            <a class={styles.navlink} href="/">
+          <Show when={location() !== "/"}>
+            <a
+              class={styles.navlink}
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                return setLocation("/");
+              }}
+            >
               Home
             </a>
           </Show>
-          <a class={styles.navlink} href="/counter">
-            Counter
-          </a>
-          <a class={styles.navlink} href="/temperature">
-            Temperature
-          </a>
-          <a class={styles.navlink} href="/flights">
-            Flights
-          </a>
+          <For each={ROUTES}>
+            {(route) => (
+              <a
+                class={styles.navlink}
+                href={route.path}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setLocation(route.path);
+                }}
+              >
+                {route.name}
+              </a>
+            )}
+          </For>
         </nav>
       </header>
       <main class={styles.content}>
-        <Show when={page === "COUNTER"}>
-          <Counter />
-        </Show>
-        <Show when={page === "TEMPERATURE"}>
-          <TemperatureConverter />
-        </Show>
-        <Show when={page === "FLIGHTS"}>
-          <FlightBooker />
-        </Show>
+        <For each={ROUTES}>
+          {(route) => (
+            <Show when={location() === route.path}>
+              <route.component />
+            </Show>
+          )}
+        </For>
       </main>
     </div>
   );
