@@ -1,5 +1,6 @@
 import { Accessor, Component, createSignal } from "solid-js";
 import { Counter } from "./guis/Counter";
+import { Crud } from "./guis/Crud";
 import { FlightBooker } from "./guis/FlightBooker";
 import { TemperatureConverter } from "./guis/TemperatureConverter";
 import { Timer } from "./guis/Timer";
@@ -28,6 +29,11 @@ export const ROUTES: Route[] = [
     path: "/timer",
     name: "Timer",
     component: Timer,
+  },
+  {
+    path: "/crud",
+    name: "CRUD",
+    component: Crud,
   },
 ];
 
