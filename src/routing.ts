@@ -2,12 +2,13 @@ import { Accessor, Component, createSignal } from "solid-js";
 import { Counter } from "./guis/Counter";
 import { FlightBooker } from "./guis/FlightBooker";
 import { TemperatureConverter } from "./guis/TemperatureConverter";
+import { Timer } from "./guis/Timer";
 
 export type Path = "HOME" | "COUNTER" | "TEMPERATURE" | "FLIGHTS";
 
 export type Route = { path: string; name: string; component: Component };
 
-export const ROUTES = [
+export const ROUTES: Route[] = [
   {
     path: "/counter",
     name: "Counter",
@@ -22,6 +23,11 @@ export const ROUTES = [
     path: "/flights",
     name: "Flights",
     component: FlightBooker,
+  },
+  {
+    path: "/timer",
+    name: "Timer",
+    component: Timer,
   },
 ];
 
