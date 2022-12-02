@@ -1,0 +1,8 @@
+.gui {
+  display: flex;
+  flex-direction: column;
+}
+
+.errored {
+    border-color: red;
+}

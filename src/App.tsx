@@ -5,6 +5,7 @@ import { Counter } from "./guis/Counter";
 import { TemperatureConverter } from "./guis/TemperatureConverter";
 
 import styles from "./App.module.css";
+import { FlightBooker } from "./guis/FlightBooker";
 
 const App: Component = () => {
   const page = parseLocation(window.location.pathname);
@@ -27,6 +28,9 @@ const App: Component = () => {
           <a class={styles.navlink} href="/temperature">
             Temperature
           </a>
+          <a class={styles.navlink} href="/flights">
+            Flights
+          </a>
         </nav>
       </header>
       <main class={styles.content}>
@@ -35,6 +39,9 @@ const App: Component = () => {
         </Show>
         <Show when={page === "TEMPERATURE"}>
           <TemperatureConverter />
+        </Show>
+        <Show when={page === "FLIGHTS"}>
+          <FlightBooker />
         </Show>
       </main>
     </div>
