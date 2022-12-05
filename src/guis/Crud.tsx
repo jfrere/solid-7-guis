@@ -1,4 +1,5 @@
 import {
+  Accessor,
   Component,
   createEffect,
   createMemo,
@@ -10,37 +11,45 @@ import { createStore } from "solid-js/store";
 import styles from "./Crud.module.css";
 
 type Person = { firstname: string; lastname: string };
+
+type CrudStore<T> = {
+  ids: string[];
+  itemIndex: Partial<Record<string, T>>;
+};
 type Actions<T> = {
   create(item: T): void;
   delete(id: string): void;
   update(id: string, newItem: T): void;
 };
 
-function useCrud<T>(): [Array<[string, T]>, Actions<T>] {
+function useCrud<T>(): [Accessor<Array<[string, T]>>, Actions<T>] {
   const [id, setId] = createSignal(0);
-  const [state, setState] = createStore<Array<[string, T]>>([]);
+  const [state, setState] = createStore<CrudStore<T>>({
+    ids: [],
+    itemIndex: {},
+  });
 
   return [
-    state,
+    () => state.ids.map((each) => [each, state.itemIndex[each]!]),
     {
       create(item: T) {
         const i = id();
         setId((i) => i + 1);
-        setState([...state, [String(i), item]]);
+        setState((state) => ({
+          ids: [...state.ids, String(i)],
+          itemIndex: { ...state.itemIndex, [i]: item },
+        }));
       },
       delete(id: string) {
-        setState(state.filter(([eachId, _]) => id !== eachId));
+        setState((state) => ({
+          ids: state.ids.filter((eachId) => eachId !== id),
+          itemIndex: Object.fromEntries(
+            Object.entries(state.itemIndex).filter(([key, _]) => key !== id)
+          ),
+        }));
       },
       update(id: string, newItem: T) {
-        setState(
-          state.map(([eachId, eachItem]) => {
-            if (eachId === id) {
-              return [eachId, newItem];
-            } else {
-              return [eachId, eachItem];
-            }
-          })
-        );
+        setState("itemIndex", id, newItem);
       },
     },
   ];
@@ -56,7 +65,7 @@ export const Crud: Component = () => {
   });
 
   const filteredPeople = createMemo(() =>
-    people.filter(([_, person]) =>
+    people().filter(([_, person]) =>
       `${person.firstname} ${person.lastname}`.startsWith(filter())
     )
   );
@@ -65,7 +74,7 @@ export const Crud: Component = () => {
     const id = activeId();
     if (id === undefined) return;
 
-    const person = people.find(([eachId, _]) => eachId === id);
+    const person = people().find(([eachId, _]) => eachId === id);
     if (!person) return;
     setEditPerson(person[1]);
   });
@@ -129,3 +138,5 @@ export const Crud: Component = () => {
     </div>
   );
 };
+
+// TODO: Create Select<T> component, that display a list of T and enables the selection via the value and onChange prop.
