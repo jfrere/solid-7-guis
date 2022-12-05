@@ -59,16 +59,21 @@ function useCrud<T>(): [Accessor<Array<[string, T]>>, Actions<T>] {
 function Select<T>(props: {
   class?: string;
   items: T[];
-  onItemSelected?: (item: T) => void;
+  onItemSelected?: (item: T | null) => void;
   renderItem: (item: T) => JSX.Element;
 }) {
   const [selectedIndex, setSelectedIndex] = createSignal<null | number>(null);
 
   createEffect(() => {
+    const _ = props.items;
+    setSelectedIndex(null);
+  });
+
+  createEffect(() => {
     if (!props.onItemSelected) return;
 
     const idx = selectedIndex();
-    if (idx == null) return null;
+    if (idx == null) return props.onItemSelected(null);
 
     props.onItemSelected(props.items[idx]);
   });
@@ -130,7 +135,9 @@ export const Crud: Component = () => {
       <Select<[string, Person]>
         class={styles.selectList}
         items={filteredPeople()}
-        onItemSelected={([idx, _]) => setActiveId(idx)}
+        onItemSelected={(selection) =>
+          setActiveId(selection === null ? undefined : selection[0])
+        }
         renderItem={([_, person]) => (
           <span>
             {person.firstname} {person.lastname}
@@ -173,5 +180,3 @@ export const Crud: Component = () => {
     </div>
   );
 };
-
-// TODO: Create Select<T> component, that display a list of T and enables the selection via the value and onChange prop.
