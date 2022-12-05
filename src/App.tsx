@@ -1,6 +1,6 @@
 import { Component, For, Show } from "solid-js";
 
-import { useLocation, ROUTES } from "./routing";
+import { ROUTES, useLocation } from "./routing";
 
 import styles from "./App.module.css";
 

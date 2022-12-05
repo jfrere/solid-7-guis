@@ -62,7 +62,6 @@ function Select<T>(props: {
   onItemSelected?: (item: T) => void;
   renderItem: (item: T) => JSX.Element;
 }) {
-  console.log("selecting");
   const [selectedIndex, setSelectedIndex] = createSignal<null | number>(null);
 
   createEffect(() => {
@@ -118,8 +117,6 @@ export const Crud: Component = () => {
     if (!person) return;
     setEditPerson(person[1]);
   });
-
-  console.log("select use");
 
   return (
     <div class={styles.guiLayout}>

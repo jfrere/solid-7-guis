@@ -1,9 +1,4 @@
-import { Accessor, Component, createSignal } from "solid-js";
-import { Counter } from "./guis/Counter";
-import { Crud } from "./guis/Crud";
-import { FlightBooker } from "./guis/FlightBooker";
-import { TemperatureConverter } from "./guis/TemperatureConverter";
-import { Timer } from "./guis/Timer";
+import { Accessor, Component, createSignal, lazy } from "solid-js";
 
 export type Path = "HOME" | "COUNTER" | "TEMPERATURE" | "FLIGHTS";
 
@@ -13,27 +8,38 @@ export const ROUTES: Route[] = [
   {
     path: "/counter",
     name: "Counter",
-    component: Counter,
+    component: lazy(async () => ({
+      default: (await import("./guis/Counter")).Counter,
+    })),
   },
   {
     path: "/temperature",
     name: "Temperature",
-    component: TemperatureConverter,
+    component: lazy(async () => ({
+      default: (await import("./guis/TemperatureConverter"))
+        .TemperatureConverter,
+    })),
   },
   {
     path: "/flights",
     name: "Flights",
-    component: FlightBooker,
+    component: lazy(async () => ({
+      default: (await import("./guis/FlightBooker")).FlightBooker,
+    })),
   },
   {
     path: "/timer",
     name: "Timer",
-    component: Timer,
+    component: lazy(async () => ({
+      default: (await import("./guis/Timer")).Timer,
+    })),
   },
   {
     path: "/crud",
     name: "CRUD",
-    component: Crud,
+    component: lazy(async () => ({
+      default: (await import("./guis/Crud")).Crud,
+    })),
   },
 ];
 
