@@ -5,6 +5,7 @@ import {
   createMemo,
   createSignal,
   For,
+  JSX,
 } from "solid-js";
 import { createStore } from "solid-js/store";
 
@@ -55,6 +56,41 @@ function useCrud<T>(): [Accessor<Array<[string, T]>>, Actions<T>] {
   ];
 }
 
+function Select<T>(props: {
+  class?: string;
+  items: T[];
+  onItemSelected?: (item: T) => void;
+  renderItem: (item: T) => JSX.Element;
+}) {
+  console.log("selecting");
+  const [selectedIndex, setSelectedIndex] = createSignal<null | number>(null);
+
+  createEffect(() => {
+    if (!props.onItemSelected) return;
+
+    const idx = selectedIndex();
+    if (idx == null) return null;
+
+    props.onItemSelected(props.items[idx]);
+  });
+
+  return (
+    <ol class={props.class}>
+      <For each={props.items}>
+        {(item, index) => (
+          <li
+            class={styles.selectItem}
+            classList={{ [styles.selected]: selectedIndex() === index() }}
+            onClick={() => setSelectedIndex(index())}
+          >
+            {props.renderItem(item)}
+          </li>
+        )}
+      </For>
+    </ol>
+  );
+}
+
 export const Crud: Component = () => {
   const [people, actions] = useCrud<Person>();
   const [activeId, setActiveId] = createSignal<string | undefined>(undefined);
@@ -63,6 +99,10 @@ export const Crud: Component = () => {
     firstname: "",
     lastname: "",
   });
+
+  actions.create({ firstname: "Ted", lastname: "Heath" });
+  actions.create({ firstname: "Arthur", lastname: "Scargill" });
+  actions.create({ firstname: "Nye", lastname: "Bevan" });
 
   const filteredPeople = createMemo(() =>
     people().filter(([_, person]) =>
@@ -79,6 +119,8 @@ export const Crud: Component = () => {
     setEditPerson(person[1]);
   });
 
+  console.log("select use");
+
   return (
     <div class={styles.guiLayout}>
       <label class={styles.filterInput}>
@@ -88,20 +130,16 @@ export const Crud: Component = () => {
           onInput={(e) => setFilter(e.currentTarget.value)}
         />
       </label>
-      <select
+      <Select<[string, Person]>
         class={styles.selectList}
-        size={10}
-        value={activeId()}
-        onChange={(e) => setActiveId(e.currentTarget.value)}
-      >
-        <For each={filteredPeople()}>
-          {([id, person]) => (
-            <option value={id}>
-              {person.firstname} {person.lastname}
-            </option>
-          )}
-        </For>
-      </select>
+        items={filteredPeople()}
+        onItemSelected={([idx, _]) => setActiveId(idx)}
+        renderItem={([_, person]) => (
+          <span>
+            {person.firstname} {person.lastname}
+          </span>
+        )}
+      />
       <div class={styles.addPersonInput}>
         <label>
           Name:{" "}

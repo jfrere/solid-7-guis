@@ -1,32 +1,45 @@
 .guiLayout {
-  display: grid; 
-  grid-template-columns: 1fr 1fr; 
-  grid-template-rows: min-content 1fr min-content; 
-  gap: 1em; 
-  grid-template-areas: 
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: min-content 1fr min-content;
+  gap: 1em;
+  grid-template-areas:
     "filter ."
     "list add"
     "actions actions";
 }
 
 .filterInput {
-    grid-area: filter;
+  grid-area: filter;
 }
 
 .selectList {
-    grid-area: list
+  grid-area: list;
 }
 
 .addPersonInput {
-    grid-area: add;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+  grid-area: add;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .actions {
-    display: flex;
-    gap: 1em;
-    grid-area: actions;
-    justify-content: center;
+  display: flex;
+  gap: 1em;
+  grid-area: actions;
+  justify-content: center;
+}
+
+.selectItem {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.selectItem:hover {
+  color: lightblue;
+}
+
+.selectItem.selected {
+  color: rgb(105, 202, 219);
 }
