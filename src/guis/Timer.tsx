@@ -8,17 +8,17 @@ import {
 
 import styles from "./Timer.module.css";
 
-function useTimer(max: Accessor<number>): [Accessor<number>, () => void] {
+function createTimer(max: Accessor<number>): [Accessor<number>, () => void] {
   const [timer, setTimer] = createSignal(0);
-  const [zeroPoint, setZeroPoint] = createSignal(Date.now());
+
+  let zeroPoint = Date.now();
 
   createEffect(() => {
-    const zero = zeroPoint();
     const handle = setInterval(() => {
-      const timer = Date.now() - zero;
+      const timer = Date.now() - zeroPoint;
       if (timer >= max()) {
         setTimer(max());
-        setZeroPoint(Date.now() - max());
+        zeroPoint = Date.now() - max();
       } else {
         setTimer(timer);
       }
@@ -27,12 +27,12 @@ function useTimer(max: Accessor<number>): [Accessor<number>, () => void] {
     onCleanup(() => clearInterval(handle));
   });
 
-  return [timer, () => setZeroPoint(Date.now())];
+  return [timer, () => (zeroPoint = Date.now())];
 }
 
 export const Timer: Component = () => {
   const [max, setMax] = createSignal(10000);
-  const [timer, reset] = useTimer(max);
+  const [timer, reset] = createTimer(max);
 
   return (
     <div class={styles.gui}>
