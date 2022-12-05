@@ -1,6 +1,6 @@
-import { Component, createSignal } from "solid-js";
+import { createSignal } from "solid-js";
 
-export const Counter: Component = () => {
+export const Counter = () => {
   const [count, setCount] = createSignal(0);
   return (
     <div>
